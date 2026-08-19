@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-08-19
+
+### Changed
+
+- Update **Recommended Creator Content** and **Partnership Ads Booster** to reference the [Partnership Ads Advertisable Content API](https://developers.facebook.com/documentation/ads-commerce/marketing-api/ad-creative/partnership-ads/content-discovery-api) (Content Discovery API), which returns branded content, UGC, affiliate posts, collabs, product and reposted content across Instagram and Facebook from a single `<BUSINESS_ID>/partnership-ads-advertisable-content` call.
+- Move eligibility and permission gating in both Creators solutions from `has_permission_for_partnership_ad` and `eligibility_errors` to `partnership_info{ad_eligibility,permission_status,permission_type,ad_code}`, and call out that `partnership_info` is an array with one entry per tagged partner, so callers must resolve the relevant entry rather than reading the first.
+
+### Added
+
+- Document the access-token permission model for the Content Discovery API: `business_management` plus at least one of `facebook_branded_content_ads_brand` or `instagram_branded_content_ads_brand`, with `instagram_basic` additionally required alongside the Instagram scope.
+- Document the filter, sort and field-expansion parameters, including `is_recommended`, `sort_by`, `content_types`, `ad_eligibilities`, `ad_usages`, `platform_types`, `media_types`, `post_types`, `country_codes`, `start_date`/`end_date` and `search_key`.
+- Document the `organic_insights` field for prioritising candidate content by organic performance before boosting.
+
+### Deprecated
+
+- Mark the platform-specific `branded_content_advertisable_medias` (Instagram) and `advertisable-posts` (Facebook) endpoints as superseded by the unified endpoint, and add migration guidance to both affected solutions.
+
 ## [1.0.0] - 2026-08-10
 
 ### Added
@@ -24,4 +41,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `CONVENTIONS.md`, a shared conventions and domain primer covering the ads entity hierarchy, Graph API mechanics, units/ID/status gotchas, the access and auth model, rate limits and data freshness, asynchronous Insights API jobs, error handling with common error codes, and a glossary.
 - Establish shared build conventions across all solutions: Graph API base URL, the `act_` ad-account prefix rule, standard placeholder tokens, the owned/client portfolio enumeration scale pattern, and scheduled-job recommendations.
 
+[1.1.0]: https://github.com/facebookincubator/catalogue-of-api-solutions/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/facebookincubator/catalogue-of-api-solutions/releases/tag/v1.0.0
