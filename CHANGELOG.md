@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-08-24
+
+### Changed
+
+- Replace the single **Opportunity Score Dashboard** solution with a modularised four-part progression — **Observe**, **Specialise**, **Apply** and **Measure** — each a self-contained module that builds on the one before it, so a build can start read-only and add write and experimentation capability incrementally.
+- Introduce the first **folder-per-solution** layout in the catalogue. The four modules live in `solutions/foundational/opportunity-score-dashboard/` as `observe.md`, `specialise.md`, `apply.md` and `measure.md`, superseding `solutions/foundational/opportunity-score-dashboard.md`.
+- Write each module's Solution overview to stand on its own, so a single module file can be handed to a coding agent without the others. Cross-module context is a pointer to the solution design rather than a dependency baked into the overview.
+- Re-frame the strategic opportunity of each module for an agency audience, with per-module KPIs (portfolio coverage, share of relevant recommendations surfaced, adoption rate, incremental lift) in place of the single solution's combined KPI line.
+- Update the `README.md` index to a single Opportunity Score Dashboard row linking the solution design and the four modules, and document how to load a modular solution into an LLM.
+
+### Added
+
+- Add `solutions/foundational/opportunity-score-dashboard/SOLUTION-DESIGN.md`, holding what the four modules share: why the solution is modular, how the modules interlink, the recommendation categorisation, the `recommendation_stages` routing table, a core-field reference, the access and permissions model, the human-review requirement for writes, and the score disclaimer.
+- Add **Observe**, the read-only foundation: reads `opportunity_score` per ad account (`act_<AD_ACCOUNT_ID>?fields=opportunity_score`) alongside `<BUSINESS_ID>/recommendations` for portfolio-wide extraction, and documents the `scopes` filter and the 100-accounts-per-page limit.
+- Add **Specialise**, a filtering and prioritisation layer over Observe: maps agency specialisms onto recommendation categories and documents the `recommendation_names`, `recommendation_stages`, `scopes` and `locale` parameters.
+- Add **Apply**, the write path: documents the three adoption routes (one-click `POST act_<AD_ACCOUNT_ID>/recommendations`, Ads Manager `url` deeplink, custom Campaign/Ad Set/Ad workflow), the type-specific `extra_data` shapes, and the requirement to re-fetch the perishable `recommendation_signature` immediately before applying.
+- Add **Measure**, an experimentation lens built on the [Ad Study API](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-study): documents `POST <BUSINESS_ID>/ad_studies` with `type=SPLIT_TEST`, control/treatment `cells` (`treatment_percentage` minimum 10, summing to at most 100), the post-launch immutability of `start_time` and `treatment_percentage`, and reading results via `GET <AD_STUDY_ID>/cells`.
+- Require a **human review gate** in **Measure**: the tool composes each experiment as a shell — proposed cells, object assignment, split, window and success metric — which a practitioner reviews and explicitly launches. No code path may publish a study unattended, because a running study's `start_time`, `treatment_percentage` and cell membership can no longer be changed.
+- Classify the 35+ recommendation types into Audience, Creative, Signals, Campaign Optimisation, Catalog, Partnership Ads and Messaging, as a shared reference in the solution design used by all four modules.
+- Document the routing of pre-flight versus mid-flight recommendations — pre-flight recommendations are adopted through the Ads Manager campaign-creation flow via the `url` deeplink, not through the apply API — with a `recommendation_stages` routing table in the solution design.
+- Document which recommendations can be applied via the API in **Apply**, with a reference table of the 14 types that have a documented `extra_data` shape — `ADVANTAGE_PLUS_AUDIENCE`, `APLUSC_STANDARD_ENHANCEMENTS_BUNDLE`, `AUTOFLOW_OPT_IN`, `AUTOMATIC_PLACEMENTS`, `BACKGROUND_GENERATION`, `CONVERSION_LEADS_OPTIMIZATION`, `CREATIVE_FATIGUE`, `LANDING_PAGE_VIEW_OPTIMIZATION_GOAL`, `MUSIC`, `PERFORMANT_CREATIVE_REELS_OPT_IN`, `PRODUCT_SET_BOOSTING`, `SCALE_GOOD_CAMPAIGN`, `SHOPS_ADS_SAOFF` and `UNCROP_IMAGE` — sourced from the [Recommendation-specific parameters](https://developers.facebook.com/documentation/ads-commerce/marketing-api/overview/performance-recommendations#recommendation-specific-parameters) documentation, a much smaller set than the full recommendation-types table.
+- Document that omitting an optional `object_selection` applies the recommendation to all IDs on the recommendation target, and that `recommendation_signature` sits outside `extra_data` and is required on every apply call.
+- Document a runtime applicability check in **Apply**: `recommendation_signature` is absent for recommendations that cannot be resolved in the API, so gate the one-click path on its presence and fall back to the deeplink.
+- Document the `opportunity_score_history` window constraints in **Apply**: `from_date` defaults to 14 days before `to_date` and must not precede it by more than 45 days, with the most recent ~2 days of data potentially missing. Chart the score over time as a line chart annotated with the `get_reason` `changelog` explanations.
+- Document the access model once, in the solution design, as the three gates a call must pass: **app permissions** (`ads_read` to read; `ads_read` and `ads_management`, or `ads_management` alone, to read and apply — `ads_management` covers reads too), **ownership** (Standard Access for ad accounts the agency owns, Advanced Access via App Review for ad accounts the advertiser owns, since Advanced Access is required for any asset you do not own), and **user permissions** (`Insights` to read or `Full Control` to read and apply, applied to the user or system user). Standard Access can be used to test the apply `POST` carrying a `recommendation_signature`.
+- Add a disclaimer in **Measure** that a high or rising Opportunity Score does not reflect actual or future performance — the experiment measures the outcome, the score signals the opportunity.
+
 ## [1.1.0] - 2026-08-19
 
 ### Changed
@@ -41,5 +68,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `CONVENTIONS.md`, a shared conventions and domain primer covering the ads entity hierarchy, Graph API mechanics, units/ID/status gotchas, the access and auth model, rate limits and data freshness, asynchronous Insights API jobs, error handling with common error codes, and a glossary.
 - Establish shared build conventions across all solutions: Graph API base URL, the `act_` ad-account prefix rule, standard placeholder tokens, the owned/client portfolio enumeration scale pattern, and scheduled-job recommendations.
 
+[1.2.0]: https://github.com/facebookincubator/catalogue-of-api-solutions/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/facebookincubator/catalogue-of-api-solutions/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/facebookincubator/catalogue-of-api-solutions/releases/tag/v1.0.0

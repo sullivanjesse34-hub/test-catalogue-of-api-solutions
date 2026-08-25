@@ -15,11 +15,15 @@ This document is structured so it can be loaded into Muse Code, Codex, Claude (o
 produce **MVP code** and **UI mock-ups** for any solution below. Suggested prompts:
 
 - *"Build an MVP backend for the Signals Health Dashboard. Use the endpoints listed and stub the auth."*
-- *"Mock up a UI for the Opportunity Score Dashboard showing the one-click adopt flow."*
+- *"Mock up a UI for the Opportunity Score Dashboard — Apply showing the one-click adopt flow."*
 - *"Generate a Python client wrapping the API calls in the Catalogue Batch & Feed Optimiser."*
 
 Each solution is self-contained: it names the exact endpoints to call and links the official
 developer documentation so generated code can be grounded in the real API.
+
+Where a solution is split into modules — as the Opportunity Score Dashboard is — each module file
+stands on its own and can be handed to an agent by itself. Load the solution's `SOLUTION-DESIGN.md`
+alongside it when you want the agent to also honour the frameworks shared across modules.
 
 ### Who does what
 | Team | Owns | Catalogue section they drive |
@@ -52,7 +56,7 @@ pinning are intentionally **not** covered here — handle those in a separate en
 
 | Category | Solution |
 | --- | --- |
-| Foundational | [Opportunity Score Dashboard](solutions/foundational/opportunity-score-dashboard.md) |
+| Foundational | [Opportunity Score Dashboard](solutions/foundational/opportunity-score-dashboard/SOLUTION-DESIGN.md) — a four-module set: [Observe](solutions/foundational/opportunity-score-dashboard/observe.md), [Specialise](solutions/foundational/opportunity-score-dashboard/specialise.md), [Apply](solutions/foundational/opportunity-score-dashboard/apply.md), [Measure](solutions/foundational/opportunity-score-dashboard/measure.md) |
 | Foundational | [Quality Assurance](solutions/foundational/quality-assurance.md) |
 | Performance | [Value Rules Engine](solutions/performance/value-rules-engine.md) |
 | Signals | [Signals Opportunity Dashboard](solutions/signals/signals-opportunity-dashboard.md) |
