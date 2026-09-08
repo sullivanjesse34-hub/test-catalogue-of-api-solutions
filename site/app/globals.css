@@ -1,0 +1,251 @@
+@import 'tailwindcss';
+
+/* ============================================================
+   Meta Brand Portal theme — token source of truth.
+   Palette mirrors .claude/rules/brand-theme.md (XMDS 3.2).
+   Components reference these tokens, never raw hex.
+   ============================================================ */
+:root {
+  /* Brand */
+  --meta-blue: #0668e1;
+  --light-blue: #0080fb;
+  --purple: #9081ff;
+  --rose: #ff5280;
+  --green: #1ea920;
+  --yellow: #f6cf4d;
+
+  /* Meta Gray scale (XMDS 3.2) */
+  --gray-025: #f9fafb;
+  --gray-050: #f2f4f7;
+  --gray-100: #e5ebf0;
+  --gray-150: #dbe3ea;
+  --gray-450: #8594a2;
+  --gray-550: #677682;
+  --gray-650: #53606a;
+  --gray-850: #333c43;
+  --gray-1000: #1b2024;
+
+  /* Semantic — light (default) */
+  --bg: var(--gray-050);
+  --surface: #ffffff;
+  --surface-2: var(--gray-025);
+  --border: var(--gray-100);
+  --border-strong: var(--gray-150);
+  --ink: var(--gray-1000);
+  --ink-2: var(--gray-650);
+  --ink-3: var(--gray-450);
+  --brand: var(--meta-blue);
+  --brand-2: var(--light-blue);
+  --brand-ink: var(--meta-blue);
+  --on-brand: #ffffff;
+  --focus: var(--light-blue);
+  --shadow-pop:
+    0 4px 16px rgba(6, 104, 225, 0.1), 0 2px 6px rgba(27, 32, 36, 0.06);
+
+  /* Category accents */
+  --cat-catalogue: var(--light-blue);
+  --cat-creative: var(--rose);
+  --cat-creators: var(--purple);
+  --cat-foundational: var(--meta-blue);
+  --cat-leads: var(--green);
+  --cat-measurement: #d8a72e;
+  --cat-miscellaneous: var(--gray-450);
+  --cat-performance: #00a6e0;
+  --cat-signals: #6e7bff;
+
+  --radius-card: 12px;
+}
+
+/* Dark — explicit toggle */
+:root[data-theme='dark'] {
+  --bg: #0f1316;
+  --surface: #181d21;
+  --surface-2: #1f262b;
+  --border: #2a3137;
+  --border-strong: #3a434a;
+  --ink: #f2f4f7;
+  --ink-2: #aeb9c4;
+  --ink-3: #7e8c98;
+  --brand-ink: #5aa2ff;
+  --focus: #5aa2ff;
+  --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --cat-measurement: var(--yellow);
+}
+
+/* Dark — system preference (unless explicitly set to light) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0f1316;
+    --surface: #181d21;
+    --surface-2: #1f262b;
+    --border: #2a3137;
+    --border-strong: #3a434a;
+    --ink: #f2f4f7;
+    --ink-2: #aeb9c4;
+    --ink-3: #7e8c98;
+    --brand-ink: #5aa2ff;
+    --focus: #5aa2ff;
+    --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.45);
+    --cat-measurement: var(--yellow);
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-brand: var(--brand);
+  --color-brand-2: var(--brand-2);
+  --color-brand-ink: var(--brand-ink);
+  --color-on-brand: var(--on-brand);
+  /* Optimistic is Meta-proprietary and cannot ship on a public site, so the
+     stack starts at Inter and falls through to the platform UI font. */
+  --font-sans:
+    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hero gradient surface with shaped colour blooms (brand-theme.md) */
+.hero-surface {
+  background: linear-gradient(
+    45deg,
+    var(--meta-blue) 0%,
+    var(--light-blue) 100%
+  );
+}
+.hero-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 85% 85%,
+      rgba(30, 169, 32, 0.35) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse at -5% -10%,
+      rgba(144, 129, 255, 0.4) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      ellipse at 10% 90%,
+      rgba(255, 82, 128, 0.3) 0%,
+      transparent 35%
+    ),
+    radial-gradient(
+      ellipse at 95% 10%,
+      rgba(246, 207, 77, 0.25) 0%,
+      transparent 30%
+    );
+}
+
+/* Solution spec (markdown) rendering — see SpecContent.tsx */
+.spec-prose {
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.spec-prose > :first-child {
+  margin-top: 0;
+}
+.spec-prose p {
+  margin: 0.85rem 0;
+}
+.spec-prose p:first-of-type {
+  font-size: 1.075rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.spec-prose strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.spec-prose em {
+  color: var(--ink-3);
+}
+.spec-prose a {
+  color: var(--brand-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.spec-prose a:hover {
+  text-decoration-thickness: 2px;
+}
+.spec-prose code {
+  font-family: var(--font-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+  font-size: 0.85em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.1em 0.4em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.spec-prose ol,
+.spec-prose ul {
+  margin: 0.85rem 0;
+  padding-left: 1.5rem;
+}
+.spec-prose ol {
+  list-style: decimal;
+}
+.spec-prose ul {
+  list-style: disc;
+}
+.spec-prose li {
+  margin: 0.45rem 0;
+}
+.spec-prose li::marker {
+  color: var(--ink-3);
+  font-weight: 600;
+}
+.spec-prose ul ul,
+.spec-prose ol ul,
+.spec-prose ul ol {
+  margin: 0.3rem 0;
+}
+.spec-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.9rem;
+}
+.spec-prose thead {
+  background: var(--surface-2);
+}
+.spec-prose th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border);
+}
+.spec-prose td {
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
